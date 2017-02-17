@@ -55,8 +55,8 @@ class Munger {
             throw new \Exception("The destination file located at '" . $destination . "' . exists, and you turned off the setting to overwrite destination files.");
         }
 
-        $realPath = realpath($destination);
-        $dir = dirname($realPath);
+        $dir = dirname($destination);
+
         if (!is_writable($dir)) {
             throw new \Exception("The destination file's directory at '" . $dir . "' is not writable.");
         }
@@ -68,8 +68,8 @@ class Munger {
      * @throws \Exception
      */
     public function getDestination() {
-        if (!is_readable($this->destination)) {
-            throw new \Exception("The destination file at '" . $this->destination . "' is not readable.");
+        if (file_exists($this->destination) && !is_readable($this->destination)) {
+            throw new \Exception("The destination file at '" . $this->destination . "' exists, but is not readable.");
         }
         return $this->destination;
     }
