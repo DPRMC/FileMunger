@@ -1,5 +1,6 @@
 <?php
 namespace DPRMC\FileMunger;
+
 abstract class MungEngine implements MungEngineInterface {
 
     /**
@@ -18,13 +19,21 @@ abstract class MungEngine implements MungEngineInterface {
     protected $sourceContent = '';
 
     /**
+     * @var bool
+     */
+    protected $overwriteDestinationFile = true;
+
+
+
+    /**
      * @return string The absolute path of the munged file.
      */
     protected abstract function mung();
 
-    public function mungAndSaveFile(string $source, string $destination) {
+    public function mungAndSaveFile(string $source, string $destination, bool $overwriteDestinationFile = true) {
         $this->setSourceFilePath($source);
-        $this->setDestinationFilePath($destination);
+        $this->setDestinationFilePath($destination,
+                                      $overwriteDestinationFile);
         $this->readSourceFile();
         $this->mung();
         return $this->getDestinationFilePath();
@@ -33,8 +42,12 @@ abstract class MungEngine implements MungEngineInterface {
     /**
      * @param string $destination The absolute file path to the destination of the munged file.
      */
-    protected function setDestinationFilePath($destination) {
-        $this->destinationFilePath = $destination;
+    protected function setDestinationFilePath($destination, $overwriteDestinationFile = true) {
+        if ($overwriteDestinationFile) {
+            $this->destinationFilePath = $destination;
+        }
+
+
     }
 
     /**
@@ -75,6 +88,20 @@ abstract class MungEngine implements MungEngineInterface {
         if ($this->sourceContent === false) {
             throw new Exception("We were unable to read the file at '" . $this->sourceFilePath . "' into a local string.");
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function overwriteDestinationFile(): bool {
+        return $this->overwriteDestinationFile;
+    }
+
+    /**
+     * @param bool $overwriteDestinationFile
+     */
+    public function setOverwriteDestinationFile(bool $overwriteDestinationFile) {
+        $this->overwriteDestinationFile = $overwriteDestinationFile;
     }
 
 }

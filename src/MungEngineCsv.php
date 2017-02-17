@@ -1,5 +1,6 @@
 <?php
 namespace DPRMC\FileMunger;
+
 abstract class MungEngineCsv extends MungEngine {
 
     /**
